@@ -1,7 +1,7 @@
 ---
 title: Ruby blocks and procs
 date: 2014-11-07 19:04 UTC
-categories: ruby blocks procs
+categories: ruby
 layout: post
 ---
 The enumerable methods are mainly what turns Ruby into such readable code. **I'm going to assume everyone reading this has at least a little experience using enumerable methods.**

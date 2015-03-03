@@ -1,7 +1,7 @@
 ---
 title: Creating a chess game with gosu in ruby
 date: 2014-10-03 19:04 UTC
-categories: ruby chess gosu
+categories: ruby
 layout: post
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Brute Forcing Logic Problems In Ruby
 date: 2014-12-31 19:04 UTC
-categories: ruby logic brute force
+categories: ruby
 layout: post
 ---
 <br>

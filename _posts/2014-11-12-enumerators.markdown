@@ -1,7 +1,7 @@
 ---
 title: The magic of enumerators
 date: 2014-11-12 19:04 UTC
-categories: ruby enumerators
+categories: ruby
 layout: post
 ---
 <br>
