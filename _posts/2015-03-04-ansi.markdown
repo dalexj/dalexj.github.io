@@ -1,0 +1,130 @@
+---
+title: Ansi
+date: 2015-03-04
+categories: ruby
+layout: post
+---
+
+Most everyone has seen some ruby that will output in color,
+and maybe used a gem to put out text in colors.
+How does that actually work?
+
+### Ansi Escape Sequences
+
+All ansi escape sequences do are call "functions" to do
+something to your terminal. These functions are things like
+moving the cursor around, scrolling,
+or of course setting colors.
+
+To call an ansi "function", you need a certain escape
+sequence so that your terminal will pick it up.
+In ruby, we can do this with the string:
+
+{% highlight ruby %}
+"\e["
+{% endhighlight %}
+
+This lets your shell know that you want to call a function.
+To actually use a function, you then need to give it some
+arguments and the function you want to use.
+To use the coloring function, you need to give the character `"m"`,
+with arguments for the text and background colors.
+Numbers in the 30s range will change the text color,
+numbers in the 40s range will change the background color.
+
+In use, this would look like
+
+{% highlight ruby %}
+"\e[34;41m"
+{% endhighlight %}
+
+What this will do is set your terminal background color and
+text color for every character that follows it until the colors are changed.
+Because of this, most gems and such will put a tag on either
+side of your string to first set the color, then change back to defaults.
+
+If you want to try this out,
+change the ones digit number for 34 and 41 to see a color change.
+
+{% highlight ruby %}
+puts "\e[34;41m Lorem ipsum dolor sit amet, consectetur adipisicing elit."
+{% endhighlight %}
+
+### The Syntax
+
+As you may notice from this garbage looking string,
+ansi sequences must follow a certain syntax.
+In general, you will have
+
+{% highlight ruby %}
+"\e[#{args}#{function}"
+{% endhighlight %}
+
+`args` in this case is going to be numbers separated by semicolons,
+where the numbers mean something different depending on the function.
+
+### A Practical Use
+
+So a cool part of using ANSI codes is that you can rewrite
+over what you already have by moving the cursor backwards.
+I'll use some of this to make an example of a loading bar.
+
+The first thing we want is some sort of bar that looks like its loading.
+For this example, I'm just going to use dots like this:
+
+{% highlight ruby %}
+100.times do |i|
+  puts ". " * (i % 20)
+  sleep(0.1)
+end
+{% endhighlight %}
+
+All this does is print out some more dots every loop until it hits 20,
+which it then resets back to 0 dots. Now we need some cool ANSI
+functionality to make it draw back over itself. The first thing
+we can easily pull off, is to move the cursor up 1 after the `puts`.
+The ANSI `A` function moves our cursor up, and we only need give
+it arguments for how far up, in this case `1`.
+
+{% highlight ruby %}
+100.times do |i|
+  puts ". " * (i % 20)
+  sleep(0.1)
+  print "\e[1A"
+end
+{% endhighlight %}
+
+The reason I use `print` here for moving up is because `puts`
+will add a newline at the end if the string doesn't have one,
+which will just move our cursor back down and accomplish nothing.
+
+Now this bar looks pretty good but it's missing something.
+What we need is a way to clear the bar if it's at full
+so the next set of dots can start slowly showing up.
+Thankfully for us, there's a function that deletes all
+characters in a line for us. `K` will delete characters on the
+current line with an argument for before cursor,
+after cursor or both. I'll give it the `2` argument
+to clear both sides.
+
+{% highlight ruby %}
+100.times do |i|
+  puts ". " * (i % 20)
+  sleep(0.1)
+  print "\e[1A\e[2K"
+end
+{% endhighlight %}
+
+Now of course we need some cool colors to make this complete.
+
+{% highlight ruby %}
+100.times do |i|
+  print "\e[37;43m"
+  puts (". " * (i % 20)) + "\e[39;49m"
+  sleep(0.1)
+  print "\e[1A\e[2K"
+end
+{% endhighlight %}
+
+**Note**: The `"\e[39;49m"` here will set the terminal back to default
+colors so that the newline from `puts` isn't colored
