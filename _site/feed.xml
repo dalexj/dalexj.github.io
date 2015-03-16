@@ -1,0 +1,1852 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Code Thoughts</title>
+    <description>Just my thoughts about the codes and related topics.
+</description>
+    <link>http://dalexj.github.io//</link>
+    <atom:link href="http://dalexj.github.io//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 16 Mar 2015 14:23:24 -0600</pubDate>
+    <lastBuildDate>Mon, 16 Mar 2015 14:23:24 -0600</lastBuildDate>
+    <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Alias</title>
+        <description>&lt;h3 id=&quot;what-is-alias&quot;&gt;What is alias?&lt;/h3&gt;
+
+&lt;p&gt;Alias is just a way to call a method by a different name.
+This is something I like to use a lot in my terminal
+to shorten commands I type extremely often.
+The Ruby language also has a bunch of built in aliases.
+Methods such as &lt;code&gt;map&lt;/code&gt;/&lt;code&gt;collect&lt;/code&gt; or &lt;code&gt;reduce&lt;/code&gt;/&lt;code&gt;inject&lt;/code&gt; do
+the exact same thing, but some people prefer one name over the other.&lt;/p&gt;
+
+&lt;h3 id=&quot;ruby-is-slow&quot;&gt;Ruby is slow&lt;/h3&gt;
+
+&lt;p&gt;Everything in Ruby is slow, it’s something we put up with
+for the code quality. Either way, it’s still interesting to see
+the differences in that speed and if there is anything faster.&lt;/p&gt;
+
+&lt;p&gt;In some cases, we want to have a method by a different name.
+For example, we’ve got a &lt;code&gt;User&lt;/code&gt; with an &lt;code&gt;admin&lt;/code&gt; attribute.
+I want to be able to ask the user if &lt;code&gt;admin?&lt;/code&gt; but our
+method name is &lt;code&gt;admin&lt;/code&gt;. This isn’t terribly hard, just need a very
+quick little method.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;User&lt;/span&gt;
+  &lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;admin?&lt;/span&gt;
+    admin
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now I, knowing that Ruby is slow, get a little interested in if this is very performant.
+I wrote the following benchmark:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;require &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;benchmark&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;a&lt;/span&gt;
+  &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;b&lt;/span&gt;
+  a
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+n = &lt;span class=&quot;integer&quot;&gt;500_000&lt;/span&gt;
+
+puts &lt;span class=&quot;constant&quot;&gt;Benchmark&lt;/span&gt;.measure { n.times { a } }
+puts &lt;span class=&quot;constant&quot;&gt;Benchmark&lt;/span&gt;.measure { n.times { b } }
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This ended up coming back with the results:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;0.790000   0.010000   0.800000 (  0.790869)
+1.480000   0.000000   1.480000 (  1.488577)
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Wow! Just calling a single method for us Ruby takes its sweet time.
+Considering we only want to be able to access this method by another name,
+there’s probably a way to skip other slow things Ruby will
+setup in creating another method.&lt;/p&gt;
+
+&lt;p&gt;Thankfully for us, Ruby has an &lt;code&gt;alias&lt;/code&gt; keyword that will do just this.
+To prove it, I wrote another benchmark to test both the alias version
+and the version we just wrote.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;require &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;benchmark&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;a&lt;/span&gt;
+  &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;b&lt;/span&gt;
+  a
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;alias&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;a&lt;/span&gt;
+
+n = &lt;span class=&quot;integer&quot;&gt;500_000&lt;/span&gt;
+
+puts &lt;span class=&quot;constant&quot;&gt;Benchmark&lt;/span&gt;.measure { n.times { a } }
+puts &lt;span class=&quot;constant&quot;&gt;Benchmark&lt;/span&gt;.measure { n.times { b } }
+puts &lt;span class=&quot;constant&quot;&gt;Benchmark&lt;/span&gt;.measure { n.times { c } }
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Results for this one:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;0.800000   0.010000   0.810000 (  0.811017)
+1.500000   0.000000   1.500000 (  1.508526)
+0.800000   0.000000   0.800000 (  0.801237)
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This &lt;code&gt;alias&lt;/code&gt; keyword seems to do exactly what we
+want here at the same speed as the original method.
+(Yes it did finish faster here but it’s so close that
+the difference most likely comes from my computer)&lt;/p&gt;
+
+&lt;h3 id=&quot;parting-notes&quot;&gt;Parting notes&lt;/h3&gt;
+
+&lt;p&gt;Overall, my conclusion is that you should use whichever one is more readable to you.
+I ran the benchmark &lt;code&gt;500000&lt;/code&gt; times and that only slowed our code down by &lt;code&gt;.7&lt;/code&gt; seconds.
+That averages out to &lt;code&gt;0.0014&lt;/code&gt; milliseconds per method call (barely anything).&lt;/p&gt;
+</description>
+        <pubDate>Mon, 16 Mar 2015 00:00:00 -0600</pubDate>
+        <link>http://dalexj.github.io//ruby/2015/03/16/alias.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2015/03/16/alias.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>Ansi</title>
+        <description>&lt;p&gt;Most everyone has seen some ruby that will output in color,
+and maybe used a gem to put out text in colors.
+How does that actually work?&lt;/p&gt;
+
+&lt;h3 id=&quot;ansi-escape-sequences&quot;&gt;Ansi Escape Sequences&lt;/h3&gt;
+
+&lt;p&gt;All ansi escape sequences do are call “functions” to do
+something to your terminal. These functions are things like
+moving the cursor around, scrolling,
+or of course setting colors.&lt;/p&gt;
+
+&lt;p&gt;To call an ansi “function”, you need a certain escape
+sequence so that your terminal will pick it up.
+In ruby, we can do this with the string:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This lets your shell know that you want to call a function.
+To actually use a function, you then need to give it some
+arguments and the function you want to use.
+To use the coloring function, you need to give the character &lt;code&gt;&quot;m&quot;&lt;/code&gt;,
+with arguments for the text and background colors.
+Numbers in the 30s range will change the text color,
+numbers in the 40s range will change the background color.&lt;/p&gt;
+
+&lt;p&gt;In use, this would look like&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[34;41m&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;What this will do is set your terminal background color and
+text color for every character that follows it until the colors are changed.
+Because of this, most gems and such will put a tag on either
+side of your string to first set the color, then change back to defaults.&lt;/p&gt;
+
+&lt;p&gt;If you want to try this out,
+change the ones digit number for 34 and 41 to see a color change.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[34;41m Lorem ipsum dolor sit amet, consectetur adipisicing elit.&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;the-syntax&quot;&gt;The Syntax&lt;/h3&gt;
+
+&lt;p&gt;As you may notice from this garbage looking string,
+ansi sequences must follow a certain syntax.
+In general, you will have&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;args&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;function&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code&gt;args&lt;/code&gt; in this case is going to be numbers separated by semicolons,
+where the numbers mean something different depending on the function.&lt;/p&gt;
+
+&lt;h3 id=&quot;a-practical-use&quot;&gt;A Practical Use&lt;/h3&gt;
+
+&lt;p&gt;So a cool part of using ANSI codes is that you can rewrite
+over what you already have by moving the cursor backwards.
+I’ll use some of this to make an example of a loading bar.&lt;/p&gt;
+
+&lt;p&gt;The first thing we want is some sort of bar that looks like its loading.
+For this example, I’m just going to use dots like this:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;integer&quot;&gt;100&lt;/span&gt;.times &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |i|
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;. &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; * (i % &lt;span class=&quot;integer&quot;&gt;20&lt;/span&gt;)
+  sleep(&lt;span class=&quot;float&quot;&gt;0.1&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;All this does is print out some more dots every loop until it hits 20,
+which it then resets back to 0 dots. Now we need some cool ANSI
+functionality to make it draw back over itself. The first thing
+we can easily pull off, is to move the cursor up 1 after the &lt;code&gt;puts&lt;/code&gt;.
+The ANSI &lt;code&gt;A&lt;/code&gt; function moves our cursor up, and we only need give
+it arguments for how far up, in this case &lt;code&gt;1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;integer&quot;&gt;100&lt;/span&gt;.times &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |i|
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;. &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; * (i % &lt;span class=&quot;integer&quot;&gt;20&lt;/span&gt;)
+  sleep(&lt;span class=&quot;float&quot;&gt;0.1&lt;/span&gt;)
+  print &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[1A&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The reason I use &lt;code&gt;print&lt;/code&gt; here for moving up is because &lt;code&gt;puts&lt;/code&gt;
+will add a newline at the end if the string doesn’t have one,
+which will just move our cursor back down and accomplish nothing.&lt;/p&gt;
+
+&lt;p&gt;Now this bar looks pretty good but it’s missing something.
+What we need is a way to clear the bar if it’s at full
+so the next set of dots can start slowly showing up.
+Thankfully for us, there’s a function that deletes all
+characters in a line for us. &lt;code&gt;K&lt;/code&gt; will delete characters on the
+current line with an argument for before cursor,
+after cursor or both. I’ll give it the &lt;code&gt;2&lt;/code&gt; argument
+to clear both sides.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;integer&quot;&gt;100&lt;/span&gt;.times &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |i|
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;. &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; * (i % &lt;span class=&quot;integer&quot;&gt;20&lt;/span&gt;)
+  sleep(&lt;span class=&quot;float&quot;&gt;0.1&lt;/span&gt;)
+  print &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[1A&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[2K&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now of course we need some cool colors to make this complete.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;integer&quot;&gt;100&lt;/span&gt;.times &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |i|
+  print &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[37;43m&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+  puts (&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;. &lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; * (i % &lt;span class=&quot;integer&quot;&gt;20&lt;/span&gt;)) + &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[39;49m&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+  sleep(&lt;span class=&quot;float&quot;&gt;0.1&lt;/span&gt;)
+  print &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[1A&lt;/span&gt;&lt;span class=&quot;char&quot;&gt;\e&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[2K&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;: The &lt;code&gt;&quot;\e[39;49m&quot;&lt;/code&gt; here will set the terminal back to default
+colors so that the newline from &lt;code&gt;puts&lt;/code&gt; isn’t colored&lt;/p&gt;
+</description>
+        <pubDate>Wed, 04 Mar 2015 00:00:00 -0700</pubDate>
+        <link>http://dalexj.github.io//ruby/2015/03/04/ansi.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2015/03/04/ansi.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>Brute Forcing Logic Problems In Ruby</title>
+        <description>&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
+
+&lt;p&gt;Today I’d like to explain a little about brute forcing a logic problem
+(brute forcing meaning you try every possible solution).
+This works better for logic problems that deal
+with many “checks” that must be performed.
+Here is an example problem:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;There are four houses in a row.
+They are made from the following materials:
+straw, wood, brick and glass.&lt;/p&gt;
+
+  &lt;p&gt;Richard’s house is somewhere to the
+left of the wooden one and the
+third one along is brick.&lt;/p&gt;
+
+  &lt;p&gt;Roger owns a straw house and Hannah does
+not live at either end,
+but lives somewhere to the right
+of the glass house.&lt;/p&gt;
+
+  &lt;p&gt;Jess lives in the fourth house,
+whilst the first house is not made from straw.&lt;/p&gt;
+
+  &lt;p&gt;What order are the houses in and
+who lives in each house?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;And here is an example of a
+solution to the above problem&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;
+&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;
+&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;
+&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;
+&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;
+&lt;a href=&quot;#n25&quot; name=&quot;n25&quot;&gt;25&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;constant&quot;&gt;HOUSES&lt;/span&gt; = [&lt;span class=&quot;symbol&quot;&gt;:straw&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:wood&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:brick&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:glass&lt;/span&gt;]
+&lt;span class=&quot;constant&quot;&gt;PEOPLE&lt;/span&gt; = [&lt;span class=&quot;symbol&quot;&gt;:richard&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:roger&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:hannah&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:jess&lt;/span&gt;]
+&lt;span class=&quot;constant&quot;&gt;POSSIBILITIES&lt;/span&gt; = &lt;span class=&quot;constant&quot;&gt;HOUSES&lt;/span&gt;.permutation.to_a.product(&lt;span class=&quot;constant&quot;&gt;PEOPLE&lt;/span&gt;.permutation.to_a)
+                .map(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:transpose&lt;/span&gt;)
+
+&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;Array&lt;/span&gt;
+  [&lt;span class=&quot;constant&quot;&gt;HOUSES&lt;/span&gt;, &lt;span class=&quot;constant&quot;&gt;PEOPLE&lt;/span&gt;].flatten.each &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |attr|
+    define_method &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;attr&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt;
+      include? attr
+    &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;correct_houses?&lt;/span&gt;(possibility)
+  hannah_index = possibility.index(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:hannah?&lt;/span&gt;)
+  possibility.index(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:richard?&lt;/span&gt;) &amp;lt; possibility.index(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:wood?&lt;/span&gt;) &amp;amp;&amp;amp;
+  possibility[&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;].brick? &amp;amp;&amp;amp;
+  possibility.find(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:roger?&lt;/span&gt;).straw? &amp;amp;&amp;amp;
+  ![&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;].include?(hannah_index) &amp;amp;&amp;amp;
+  possibility.index(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:glass?&lt;/span&gt;) &amp;lt; hannah_index &amp;amp;&amp;amp;
+  possibility.last.jess? &amp;amp;&amp;amp;
+  !possibility.first.straw?
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+p &lt;span class=&quot;constant&quot;&gt;POSSIBILITIES&lt;/span&gt;.find { |possibility| correct_houses? possibility }
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Output:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;[[&lt;span class=&quot;symbol&quot;&gt;:glass&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:richard&lt;/span&gt;], [&lt;span class=&quot;symbol&quot;&gt;:straw&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:roger&lt;/span&gt;], [&lt;span class=&quot;symbol&quot;&gt;:brick&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:hannah&lt;/span&gt;], [&lt;span class=&quot;symbol&quot;&gt;:wood&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:jess&lt;/span&gt;]]
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I’m not going to go over this, but I suggest you take
+a short look at it to see the kinds of methods used here.
+Methods like &lt;code&gt;.permutation&lt;/code&gt; and &lt;code&gt;.product&lt;/code&gt; are especially useful.&lt;/p&gt;
+
+&lt;p&gt;(and for those of you wondering,
+the metaprogramming on the array class here is so I
+have the &lt;code&gt;?&lt;/code&gt; methods for a tiny bit of readability)&lt;/p&gt;
+
+&lt;h2 id=&quot;the-approach&quot;&gt;The Approach&lt;/h2&gt;
+
+&lt;p&gt;When looking at these kinds of problems,
+the first thing I do is see how I want the data to look,
+then generate the list of possibilities to match that.&lt;/p&gt;
+
+&lt;p&gt;In the example above,
+I wanted the output to be a set of 4 houses,
+and each set to contain the person and type.
+“Set” in this case ending up as an array in code.
+If you were answering some multiple choice questions,
+you might want the output to look like:
+&lt;code&gt;[:a, :b, :a, :c, :d]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Now that we have some way to write the answer
+in a way that ruby can understand,
+we can generate every possible solution&lt;/p&gt;
+
+&lt;p&gt;Once we have the possible solutions,
+we take all the “rules” that the problem
+gives us and write them are booleans in our ruby code.
+The goal we’re going for here is where we can input the
+&lt;code&gt;[:a, :b, :a, :c, :d]&lt;/code&gt; and check whether it is correct or not.&lt;/p&gt;
+
+&lt;p&gt;Once we have those 2 piece’s there’s only 1 step remaining:
+run through every possible solution and find the correct one.&lt;/p&gt;
+
+&lt;h2 id=&quot;example-problem&quot;&gt;Example problem&lt;/h2&gt;
+
+&lt;p&gt;Ok, that stuff sounds good and all, but how do we write it all?
+I can’t explain it any better than I did above
+so let’s just grab a problem and solve it.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;The first question with B as the correct answer is:
+      &lt;ul&gt;
+        &lt;li&gt;A. 1&lt;/li&gt;
+        &lt;li&gt;B. 4&lt;/li&gt;
+        &lt;li&gt;C. 3&lt;/li&gt;
+        &lt;li&gt;D. 2&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;The answer to Question 4 is:
+      &lt;ul&gt;
+        &lt;li&gt;A. D&lt;/li&gt;
+        &lt;li&gt;B. A&lt;/li&gt;
+        &lt;li&gt;C. B&lt;/li&gt;
+        &lt;li&gt;D. C&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;The answer to Question 1 is:
+      &lt;ul&gt;
+        &lt;li&gt;A. D&lt;/li&gt;
+        &lt;li&gt;B. C&lt;/li&gt;
+        &lt;li&gt;C. B&lt;/li&gt;
+        &lt;li&gt;D. A&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;The number of questions which have D as the correct answer is:
+      &lt;ul&gt;
+        &lt;li&gt;A. 3&lt;/li&gt;
+        &lt;li&gt;B. 2&lt;/li&gt;
+        &lt;li&gt;C. 1&lt;/li&gt;
+        &lt;li&gt;D. 0&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+    &lt;li&gt;The number of questions which have B as the correct answer is:
+      &lt;ul&gt;
+        &lt;li&gt;A. 0&lt;/li&gt;
+        &lt;li&gt;B. 2&lt;/li&gt;
+        &lt;li&gt;C. 3&lt;/li&gt;
+        &lt;li&gt;D. 1&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Well this is the kind of problem that exactly
+fits the kind that we can brute force.
+Lots of possibilities with a bunch of intertwined logic,
+that we can certainly check by running some boolean statements.&lt;/p&gt;
+
+&lt;p&gt;Anyway, our first step is to generate our possibilities.
+We probably want the&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;[:a, :b, :a, :c, :d]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;format so I’m going to stick with it.&lt;/p&gt;
+
+&lt;p&gt;We can generate an array of these by using the
+&lt;code&gt;repeated_permutation&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;p&gt;To use this method, we need an array of possible answers,
+(in this case &lt;code&gt;[:a,:b,:c,:d]&lt;/code&gt;),
+then just give the &lt;code&gt;repeated_permutation&lt;/code&gt; method the
+length that we want.
+Since there are 5 questions, we want a length of 5.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;constant&quot;&gt;POSSIBILITIES&lt;/span&gt; = [&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;,&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;,&lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;,&lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;].repeated_permutation(&lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;).to_a
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;output:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;[[&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;], [&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;], [&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;]...]
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Next, let’s start writing checks for each of the questions.
+The first question has to do with the first index of the answer b
+we can get the index with &lt;code&gt;possibility.index(:b)&lt;/code&gt;,
+assuming possibility is the array of answers.
+Now we just have to match that up the the answers the question gives us.
+To get this done, I would use hash of answers like this:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;}
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This is pretty much stright copying from&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ol&gt;
+    &lt;li&gt;The first question with B as the correct answer is:
+      &lt;ul&gt;
+        &lt;li&gt;A. 1&lt;/li&gt;
+        &lt;li&gt;B. 4&lt;/li&gt;
+        &lt;li&gt;C. 3&lt;/li&gt;
+        &lt;li&gt;D. 2&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The last part is to match the index and the answers up.
+Here’s what I ended up with:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_1&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;]] - &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt; == possibility.index(&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;code&gt;- 1&lt;/code&gt; here is because the index method returns
+us the array index which starts at 0.&lt;/p&gt;
+
+&lt;h3 id=&quot;skipping-ahead-spoiler-alert&quot;&gt;Skipping ahead: SPOILER ALERT&lt;/h3&gt;
+
+&lt;h4 id=&quot;before-you-read-this-next-section-you-may-want-to-solve-the-q2---q5-answers-on-your-own-as-i-will-not-be-going-over-them-and-the-answer-is-here&quot;&gt;Before you read this next section, You may want to solve the &lt;code&gt;q_2&lt;/code&gt; - &lt;code&gt;q_5&lt;/code&gt; answers on your own, as I will not be going over them and the answer is here&lt;/h4&gt;
+
+&lt;p&gt;Here are the answer checkers I have come up with
+to check against all five questions:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;
+&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;
+&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;
+&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;
+&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_1&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;]] - &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt; == possibility.index(&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_2&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;]] == possibility[&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;]
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_3&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;]] == possibility[&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;]
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_4&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;]] == possibility.count(&lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_5&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;]] == possibility.count(&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now that we have all 5 checkers we only need to find
+one possibility that will pass every check.
+This is probably the simplest piece of code on this page,
+and if you’ve made it this far, you can probably
+figure it out on your own.
+Either way, here’s what I came up with:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;correct = &lt;span class=&quot;constant&quot;&gt;POSSIBILITIES&lt;/span&gt;.find &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |poss|
+  (&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;..&lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;).all? { |num| __send__ &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;q_&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;num&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, poss }
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This code will run through all the possibilities,
+“send” the methods &lt;code&gt;q_1&lt;/code&gt;, &lt;code&gt;q_2&lt;/code&gt;, etc,
+and check if they were all true.&lt;/p&gt;
+
+&lt;p&gt;Finally, we can print out our answer:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;p correct
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The answer we get now is &lt;code&gt;[:c, :d, :b, :c, :b]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Congratulations! You’ve made it this far down this post.
+I don’t have much else to say other than good luck,
+and here’s the full code for the example for reference.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;
+&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;
+&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;
+&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;
+&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;
+&lt;a href=&quot;#n25&quot; name=&quot;n25&quot;&gt;25&lt;/a&gt;
+&lt;a href=&quot;#n26&quot; name=&quot;n26&quot;&gt;26&lt;/a&gt;
+&lt;a href=&quot;#n27&quot; name=&quot;n27&quot;&gt;27&lt;/a&gt;
+&lt;a href=&quot;#n28&quot; name=&quot;n28&quot;&gt;28&lt;/a&gt;
+&lt;a href=&quot;#n29&quot; name=&quot;n29&quot;&gt;29&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n30&quot; name=&quot;n30&quot;&gt;30&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n31&quot; name=&quot;n31&quot;&gt;31&lt;/a&gt;
+&lt;a href=&quot;#n32&quot; name=&quot;n32&quot;&gt;32&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;constant&quot;&gt;POSSIBILITIES&lt;/span&gt; = [&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;,&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;,&lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;,&lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;].repeated_permutation(&lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;).to_a
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_1&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;]] - &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt; == possibility.index(&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_2&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;]] == possibility[&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;]
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_3&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:c&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;]] == possibility[&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;]
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_4&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;]] == possibility.count(&lt;span class=&quot;symbol&quot;&gt;:d&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;q_5&lt;/span&gt;(possibility)
+  answers = {&lt;span class=&quot;key&quot;&gt;a&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;b&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;c&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;key&quot;&gt;d&lt;/span&gt;: &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;}
+  answers[possibility[&lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;]] == possibility.count(&lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+correct = &lt;span class=&quot;constant&quot;&gt;POSSIBILITIES&lt;/span&gt;.find &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |poss|
+  (&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;..&lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;).all? { |num| __send__ &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;q_&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;num&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, poss }
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+p correct
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 31 Dec 2014 19:04:00 -0000</pubDate>
+        <link>http://dalexj.github.io//ruby/2014/12/31/brute-force.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2014/12/31/brute-force.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>The magic of enumerators</title>
+        <description>&lt;p&gt;&lt;br /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-are-enumerators&quot;&gt;What are enumerators?&lt;/h3&gt;
+&lt;p&gt;Whenever I try and explain enumerators to people, they tend to have no idea what I’m even referring to.
+Enumerators are objects that many enumerable methods return if they have not been given a block.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-do-i-use-an-enumerator&quot;&gt;How do I use an enumerator?&lt;/h3&gt;
+&lt;p&gt;The first step is to grab an enumerator to play with.
+I’m going to start with the most simple one for now:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enumerator = [&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;].each
+puts enumerator.inspect
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; #&amp;lt;Enumerator: [1, 2, 3]:each&amp;gt;&lt;/span&gt;
+
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now that we have an enumerator, let’s check out what methods it has.
+Looking at the
+&lt;a href=&quot;http://ruby-doc.org/core-2.1.4/Enumerator.html&quot;&gt;Ruby docs&lt;/a&gt;,
+we have:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;comment&quot;&gt;# each&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# each_with_index&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# each_with_object&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# feed&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# inspect&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# next&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# next_values&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# peek&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# peek_values&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# rewind&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# size&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# with_index&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# with_object&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;While many of these are very useful, I’m only going to go over a few.
+My personal favorite of these methods is the:&lt;/p&gt;
+
+&lt;h3 id=&quot;withindex&quot;&gt;.with_index&lt;/h3&gt;
+
+&lt;p&gt;I find this method to be very useful in some cases,
+and I usually use enumerators for this functionality only.
+In most ruby code, you don’t need the index you’re currently at because
+enumerables take care of those problems very well.
+However, you start needing every once in a while, especially when working with algorithms
+and want your code to still look like decent, thought-out ruby code.&lt;/p&gt;
+
+&lt;h4 id=&quot;what-does-it-do&quot;&gt;What does it do?&lt;/h4&gt;
+
+&lt;p&gt;.with_index passes the index as an argument to the block you give it after
+the typical arguments of the enumerator you’re using.
+For example:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enumerator = [&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;].each
+
+enumerator.with_index &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |element, index|
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;element&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt; is at &lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;index&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; a is at 0&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; b is at 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; c is at 2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Ok, you understood that much but where is this actually useful?
+Any algorithms that is dependent on the position of the element,
+such as a checksum for credit card numbers,
+can be written much cleaner using the enumerator .with_index method.&lt;/p&gt;
+
+&lt;h4 id=&quot;examples&quot;&gt;Examples&lt;/h4&gt;
+
+&lt;p&gt;One part of a check sum’s calculation is doubling every other digit.
+As Rubyists, we immediately go to enumerables to solve all of our problems.
+A likely first answer is:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;some_array = []
+[&lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;9&lt;/span&gt;].each_with_index &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |digit, index|
+  &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; index.even?
+    some_array &amp;lt;&amp;lt; digit * &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;
+  &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;
+    some_array &amp;lt;&amp;lt; digit
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+puts some_array.inspect
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; [8, 5, 18]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Sure we got our answer, but who likes to shovel things into another
+array when you’re already using an enumerable method?
+Here’s how you can do this with the .with_index enumerator method:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;some_array = [&lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;9&lt;/span&gt;].map.with_index &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |digit, index|
+  index.even? ? digit * &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt; : digit
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+puts some_array.inspect
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; [8, 5, 18]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Doesn’t that just look a little bit nicer?
+It’s a bit more concise how Ruby should look,
+and we’re not shoveling things into an array inside of our enumerable method.
+Even without the ternary, the .with_index makes this looks quite a bit better:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;some_array = [&lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;9&lt;/span&gt;].map.with_index &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |digit, index|
+  &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; index.even?
+    digit * &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;
+  &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt;
+    digit
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I think that’s enough time for that method,
+let’s look at a few more.&lt;/p&gt;
+
+&lt;h3 id=&quot;next-and-peek-and-take&quot;&gt;.next and .peek and .take&lt;/h3&gt;
+
+&lt;p&gt;These two methods are useful if you want to take one step at a time
+while going through your enumerator.
+Enumerable methods go through everything in the list,
+but this is one way to see what’s going on between all that.&lt;/p&gt;
+
+&lt;h4 id=&quot;what-does-it-do-1&quot;&gt;What does it do?&lt;/h4&gt;
+
+&lt;p&gt;.next will give you the next value the enumerator would “yield” to
+(call the block) and it also iterates once.
+If there’s nothing else to iterate over, it raises a StopIteration.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enum = [&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;].each
+
+puts enum.next
+puts enum.next
+puts enum.next
+puts enum.next
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 3&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;# ~&amp;gt; StopIteration&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# ~&amp;gt; iteration reached an end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Then we have .peek which does the same as .next but it doesn’t iterate at all.
+It still raises a StopIteration when reaching the end though.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enum = [&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;].each
+
+puts enum.peek
+puts enum.peek
+enum.next
+puts enum.peek
+enum.next
+puts enum.peek
+enum.next
+puts enum.peek
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 3&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;# ~&amp;gt; StopIteration&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# ~&amp;gt; iteration reached an end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Then .take(n) will do the same as .next n times:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enum = [&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;].each
+
+puts enum.take(&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;)
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And if you do need to go back, you have:&lt;/p&gt;
+
+&lt;h3 id=&quot;rewind&quot;&gt;.rewind&lt;/h3&gt;
+
+&lt;p&gt;There’s not much explination needed for this one, so here’s an example:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enum = [&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;,&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;].each
+
+puts enum.next
+puts enum.next
+enum.rewind
+puts enum.next
+puts enum.next
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;All rewind does is reset the iteration back to the beginning.
+Pretty straightforward.&lt;/p&gt;
+
+&lt;h3 id=&quot;time-to-get-fancy&quot;&gt;Time to get fancy&lt;/h3&gt;
+
+&lt;p&gt;Alright, we went over some of the methods that enumerators give us.
+Now how can we make some enumerators to work with?&lt;/p&gt;
+
+&lt;p&gt;Many enumerable methods will return us one when called without a block.
+Here’s a short list of common enumerable methods that return enumerators:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;[].collect
+[].each
+[].each_slice(num)
+[].each_with_index
+[].each_with_object
+[].find
+[].flat_map
+[].group_by
+[].map
+[].max_by
+[].min_by
+[].reject
+[].select
+[].sort_by
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We can also use Enumerator.new and give it a block to iterate over.
+Here’s a relatively simple example:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;enum = &lt;span class=&quot;constant&quot;&gt;Enumerator&lt;/span&gt;.new &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |yielder|
+  (&lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;..&lt;span class=&quot;integer&quot;&gt;10&lt;/span&gt;).each &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |num|
+    yielder &amp;lt;&amp;lt; num
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+puts enum.take(&lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;)
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 4&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 5&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 6&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 7&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 8&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This yielder parameter is where we add our items to iterate over for our enumerator.
+A nice thing about this is that we infinitely add items to it,
+then iterate only a set number of times.
+For example, if we wanted all the even numbers:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;all_evens = &lt;span class=&quot;constant&quot;&gt;Enumerator&lt;/span&gt;.new &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |yielder|
+  i = &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+  loop &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt;
+    yielder &amp;lt;&amp;lt; i &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; i.even?
+    i += &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+puts all_evens.take(&lt;span class=&quot;integer&quot;&gt;5&lt;/span&gt;)
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 4&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 6&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 8&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 10&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;We are looping infinitely here,
+but we can still take the first n even numbers since the enumerator only generates
+numbers when we called the .take method.&lt;/p&gt;
+
+&lt;h4 id=&quot;so-whats-so-fancy&quot;&gt;So what’s so fancy?&lt;/h4&gt;
+
+&lt;p&gt;We can write a few complex algorithms much simpler using these enumerators,
+especially those that are dependent on previous values.
+The famous example of the fibonacci sequence can be generated quite easily without recursion.
+Here’s one way to construct this:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;
+&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;
+&lt;a href=&quot;#n22&quot; name=&quot;n22&quot;&gt;22&lt;/a&gt;
+&lt;a href=&quot;#n23&quot; name=&quot;n23&quot;&gt;23&lt;/a&gt;
+&lt;a href=&quot;#n24&quot; name=&quot;n24&quot;&gt;24&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;fib = &lt;span class=&quot;constant&quot;&gt;Enumerator&lt;/span&gt;.new &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |yielder|
+  &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;.times { yielder &amp;lt;&amp;lt; &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt; }
+  one_before = &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+  two_before = &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+  loop &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt;
+    add_value = one_before + two_before
+    two_before = one_before
+    one_before = add_value
+    yielder &amp;lt;&amp;lt; add_value
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+puts fib.take(&lt;span class=&quot;integer&quot;&gt;10&lt;/span&gt;)
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 1&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 2&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 3&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 5&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 8&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 13&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 21&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 34&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; 55&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I tried to keep the more complex algorithmic pieces out of the way,
+so we can focus more on the enumerator piece.
+The enumerator can now give us as many fibonacci values as we want,
+without having to regenerate everything in a recursive way for every value.&lt;/p&gt;
+
+&lt;p&gt;What I mean by a recursive way is something like this:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;fib&lt;/span&gt;(n)
+  &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; n &amp;lt;= &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;
+  fib(n - &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;) + fib(n - &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;That’s shorter code you say?
+Valid point, but the enumerator never has to call itself again, and is thus much faster.
+I benchmarked the enumerator version and the recursive version to find only the 50th fibonacci number.
+Here are my results:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;comment&quot;&gt;# recursion:  1275.593612 seconds&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# enumerator: 0.000019    seconds&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In other words, enumerators are super cool and everyone should them.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 12 Nov 2014 19:04:00 -0000</pubDate>
+        <link>http://dalexj.github.io//ruby/2014/11/12/enumerators.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2014/11/12/enumerators.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>Ruby blocks and procs</title>
+        <description>&lt;p&gt;The enumerable methods are mainly what turns Ruby into such readable code. &lt;strong&gt;I’m going to assume everyone reading this has at least a little experience using enumerable methods.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s start out with something relatively simple:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;lengths = [&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;abc&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;d&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;ef&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;].map &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |chars|
+  chars.length
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;If we run this, we get:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; [3, 1, 2]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In this example, it is fairly easy to see what’s going on.&lt;/p&gt;
+
+&lt;p&gt;How about this one?&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;capitals = &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;%w(&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a b c d&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;)&lt;/span&gt;&lt;/span&gt;.map(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:upcase&lt;/span&gt;)
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;If we run this, we get this:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; [&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;D&amp;quot;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;the-first-job-of-the-&quot;&gt;The first job of the &amp;amp;&lt;/h3&gt;
+
+&lt;p&gt;Ok, most of you know the &amp;amp;:symbol shortcut already.
+But who knows what it actually does?&lt;/p&gt;
+
+&lt;p&gt;First thing to note, the &amp;amp; turns a proc object into a block that can be passed to any method in Ruby.
+Every method implicitly accepts a block, even if it’s never used for anything.
+Here’s an example of how the proc is turned into a block rather than an object:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;to_s_proc = proc { |arg| arg.to_s }
+[&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;].map(&amp;amp;to_s_proc)
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As expected:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;[&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;]
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So the proc object we created was passed as a block to the .map method.&lt;/p&gt;
+
+&lt;p&gt;This proc object is just that =&amp;gt; an object. So, it CAN be passed through one of the parameters of your function.&lt;/p&gt;
+
+&lt;p&gt;This is important to know because you muct pass it as a block to most functions.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;to_s_proc = proc { |arg| arg.to_s }
+[&lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;, &lt;span class=&quot;integer&quot;&gt;4&lt;/span&gt;].map(to_s_proc)
+
+&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; ArgumentError: wrong number of arguments (1 for 0)&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;the map method takes 0 arguments&lt;/p&gt;
+
+&lt;p&gt;The &amp;amp; turns something into a block. The block is just a set of code, not an object.&lt;/p&gt;
+
+&lt;h3 id=&quot;the-second-job-of-the-&quot;&gt;The second job of the &amp;amp;&lt;/h3&gt;
+
+&lt;p&gt;That’s the first piece, the &amp;amp; also does one other thing behind the scenes.
+It’s calling .to_proc on whatever you’re using it on.&lt;/p&gt;
+
+&lt;p&gt;In the case of a proc, this is pretty self explanatory:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;to_s_proc = proc { |arg| arg.to_s }
+to_s_proc == to_s_proc.to_proc
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;If you’re not using a proc, however, this feels like more Ruby magic.
+In the case of a symbol, it has a very minimal .to_proc method.
+Back to this example:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;capitals = &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;%w(&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a b c d&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;)&lt;/span&gt;&lt;/span&gt;.map(&amp;amp;&lt;span class=&quot;symbol&quot;&gt;:upcase&lt;/span&gt;)
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+&lt;p&gt;We know that a symbol is not a proc, yet it has this method on it:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;to_s_proc = &lt;span class=&quot;symbol&quot;&gt;:to_s&lt;/span&gt;.to_proc
+to_s_proc.call(&lt;span class=&quot;integer&quot;&gt;3&lt;/span&gt;)
+
+&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; &amp;quot;3&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So pretty much, anything that has a .to_proc method we can use as a block for our functions with the &amp;amp;:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;class&quot;&gt;StudentUpcaser&lt;/span&gt;
+
+  &lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;to_proc&lt;/span&gt;
+    proc &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |my_arg|
+      puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;Doing my work...&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+      my_arg.upcase
+    &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+student = &lt;span class=&quot;constant&quot;&gt;StudentUpcaser&lt;/span&gt;.new
+
+&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;%w(&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a b c&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;)&lt;/span&gt;&lt;/span&gt;.map(&amp;amp;student)
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This code will return us:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; [&amp;quot;A&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;C&amp;quot;]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As well as printing out:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; Doing my work...&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; Doing my work...&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# =&amp;gt; Doing my work...&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now you can go out into Rubyland and create your own magical functions using procs with the &amp;amp;.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 07 Nov 2014 19:04:00 -0000</pubDate>
+        <link>http://dalexj.github.io//ruby/2014/11/07/blocks-procs.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2014/11/07/blocks-procs.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>a = a is nil?????</title>
+        <description>&lt;h1 id=&quot;a--a-is-nil&quot;&gt;a = a is nil?????&lt;/h1&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;a = b
+
+&lt;span class=&quot;comment&quot;&gt;# ~&amp;gt; NameError: undefined local variable or method `b&#39; for main:Object&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Alright, this much makes sense, we have never set b, but take a look at this next one&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;a = a      &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; nil&lt;/span&gt;
+a.inspect  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; &amp;quot;nil&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Wait a minute… What’s going on here?&lt;/p&gt;
+
+&lt;p&gt;Above, we tried to call a variable that didn’t exist and ended up with a NameError&lt;/p&gt;
+
+&lt;p&gt;One more silly thing about this, just to see exactly what’s going on here.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;defined?&lt;/span&gt;(a)  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; nil&lt;/span&gt;
+a = a        &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; nil&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;defined?&lt;/span&gt;(a)  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; &amp;quot;local-variable&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This is just proving that we have not set the variable “a” beforehand, yet somehow it’s being set to nil when we set it to itself&lt;/p&gt;
+
+&lt;h1 id=&quot;why-does-this-happen&quot;&gt;Why does this happen?&lt;/h1&gt;
+
+&lt;p&gt;First of all, we need to realize that this is ruby, and ruby likes to do lots of magic behind our backs&lt;/p&gt;
+
+&lt;p&gt;Whenever we set a local variable inside ruby, it creates a placeholder for variable to go. This placeholder, as you may have guessed, is nil.&lt;/p&gt;
+
+&lt;p&gt;It’s a little hard to explain exactly, so here’s some code that shows what I’m talking about.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;begin&lt;/span&gt;
+  a = b
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a = b didn&#39;t throw an error&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;constant&quot;&gt;NameError&lt;/span&gt;
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;NameError, as expected&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; NameError, as expected&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Ok this is what we showed earlier, right? But if you see here, the code still tried to set a to b, and continued on because we handled the error&lt;/p&gt;
+
+&lt;p&gt;Now remember what I said about ruby creating a placeholder for our variable? Let’s use the above code to see that in action&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;a href=&quot;#n9&quot; name=&quot;n9&quot;&gt;9&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n10&quot; name=&quot;n10&quot;&gt;10&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n11&quot; name=&quot;n11&quot;&gt;11&lt;/a&gt;
+&lt;a href=&quot;#n12&quot; name=&quot;n12&quot;&gt;12&lt;/a&gt;
+&lt;a href=&quot;#n13&quot; name=&quot;n13&quot;&gt;13&lt;/a&gt;
+&lt;a href=&quot;#n14&quot; name=&quot;n14&quot;&gt;14&lt;/a&gt;
+&lt;a href=&quot;#n15&quot; name=&quot;n15&quot;&gt;15&lt;/a&gt;
+&lt;a href=&quot;#n16&quot; name=&quot;n16&quot;&gt;16&lt;/a&gt;
+&lt;a href=&quot;#n17&quot; name=&quot;n17&quot;&gt;17&lt;/a&gt;
+&lt;a href=&quot;#n18&quot; name=&quot;n18&quot;&gt;18&lt;/a&gt;
+&lt;a href=&quot;#n19&quot; name=&quot;n19&quot;&gt;19&lt;/a&gt;
+&lt;strong&gt;&lt;a href=&quot;#n20&quot; name=&quot;n20&quot;&gt;20&lt;/a&gt;&lt;/strong&gt;
+&lt;a href=&quot;#n21&quot; name=&quot;n21&quot;&gt;21&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;begin&lt;/span&gt;
+  puts a.inspect
+&lt;span class=&quot;keyword&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;constant&quot;&gt;NameError&lt;/span&gt;
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a is not set yet&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;begin&lt;/span&gt;
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a being set to placeholder, but errors at b because b is not set&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+  a = b
+&lt;span class=&quot;keyword&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;constant&quot;&gt;NameError&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;begin&lt;/span&gt;
+  puts a.inspect
+&lt;span class=&quot;keyword&quot;&gt;rescue&lt;/span&gt; &lt;span class=&quot;constant&quot;&gt;NameError&lt;/span&gt;
+  puts &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;a is not set yet&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; a is not set yet&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; a being set to placeholder, but errors at b because b is not set&lt;/span&gt;
+&lt;span class=&quot;comment&quot;&gt;# &amp;gt;&amp;gt; nil&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Well that’s a bunch of begins and resuces to read through, but the general idea is pretty straightforward.&lt;/p&gt;
+
+&lt;p&gt;When ruby sees:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;a =
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It sets a right then and there to nil, our “placeholder”.&lt;/p&gt;
+
+&lt;p&gt;When ruby sees:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;a = b
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;It first sets a to the “placeholder” nil, then errors out because b doesn’t exist.
+In our case, we handled the error, so we could keep going with our program, with a being set to nil&lt;/p&gt;
+
+&lt;p&gt;This brings us right back to where we started&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;a = a &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; nil&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now we can explain why this is happening.
+At first, ruby sees that we want to create this variable “a” and sets it to nil momentarily.
+Ruby then sees that we’re setting it to a, and it knows a is nil, so a ends up as nil rather than undefined&lt;/p&gt;
+
+&lt;h1 id=&quot;wrapping-up&quot;&gt;Wrapping up&lt;/h1&gt;
+
+&lt;p&gt;Well we uncovered one of the many ways ruby is trying to protect us, which hopefully will further your understanding of the language.
+Ruby, while being extremely beginner friendly, ends up hiding a bunch of random things like this one as to not confuse us.
+However, in small edge cases like this, we can run into a random unexplained pieces of the code that leaves us completely confused why it even works.
+It’s good to note that in these cases, there is usually an explanation which ends up not being too complicated for what’s really happening behind the scenes.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 26 Oct 2014 19:04:00 -0000</pubDate>
+        <link>http://dalexj.github.io//ruby/2014/10/26/nil.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2014/10/26/nil.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+      <item>
+        <title>Creating a chess game with gosu in ruby</title>
+        <description>&lt;p&gt;First of all, what is this “gosu”? As I made my way through the beginnings of ruby, I wanted to go make something I can actually show someone that has no idea what coding is about. That means no using the command line and playing some mastermind, since they’re not going to understand the work that goes into something like a command line app. So I asked around for some sort of way to display something outside of my console, and ended up hearing of this gem called gosu.&lt;/p&gt;
+
+&lt;p&gt;Simply, gosu’s a (somewhat lightweight) 2D game engine with some very minimal functionality, but enough functionality for me to use it for a 2D board game. The first thing I noticed was that it’s quite old and has not been updated for a ruby version past 1.9.3, so I had to grab that version before moving on. At some point, I may want to try and fork it and update to 2.1.2, but that’s not what this article is about.&lt;/p&gt;
+
+&lt;p&gt;Because of how simplistic gosu is, it’s very easy to pick up and learn in just a few minutes how to get the basics to show up on your screen. In my case, I merely want a few images of chess pieces to be placed on the screen and moved around at will, which only took me a few minutes to figure out how to import everything as gosu objects and draw them where I pleased. Once I had that all figured out, I moved onto the the actual chess playing.&lt;/p&gt;
+
+&lt;p&gt;A large section of my code has been directed toward merely algorithms to check if every piece is moving legally along the board. Looking at one piece by itself, this seems fairly simple to begin with. A rook on “A1” could move to any square on the board where one of the ranks/files matched. So all I needed to do to see if the rook could move was match its location by a regex of the target location. Example:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;function&quot;&gt;rook_can_move?&lt;/span&gt;(rook_location, desired_location)
+  rook_location =~ &lt;span class=&quot;constant&quot;&gt;Regexp&lt;/span&gt;.new(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;inline&quot;&gt;&lt;span class=&quot;inline-delimiter&quot;&gt;#{&lt;/span&gt;desired_location&lt;span class=&quot;inline-delimiter&quot;&gt;}&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+rook_can_move?(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;A1&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;A8&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; 0&lt;/span&gt;
+rook_can_move?(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;A1&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;H1&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; 1&lt;/span&gt;
+rook_can_move?(&lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;A1&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;B2&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;)  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; nil&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;0 and 1 in this case will be “truthy” while nil is “falsey”, which allows this simple regex to check if the rook is allowed to move to a certain spot. Now this type of “algorithm” needs to be written for every other piece in the game, but you also have to account for your king being in check, and not being able to jump pieces later. With either the rook or the knight here being the easiest to program a simple algorithm for, the rest ended up looking quite messy and I had to shove all those checker algorithms into their own files.&lt;/p&gt;
+
+&lt;p&gt;Eventually, after long hours of deleting code that didn’t work and deleting more code that didn’t work, I am now at a point where the game is completely playable except for 1 small feature of being able to choose which piece you want to promote to when your pawn reaches the end of the board.&lt;/p&gt;
+
+&lt;p&gt;It’s been quite a ride going through trying to come up with the algorithms to a game I already know so well, and would recommend anyone to try and go through a similar process with games they know very well, because to a computer, your game is a whole lot more complex than you think it is.&lt;/p&gt;
+</description>
+        <pubDate>Fri, 03 Oct 2014 19:04:00 -0000</pubDate>
+        <link>http://dalexj.github.io//ruby/2014/10/03/chess.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2014/10/03/chess.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
+    
+  </channel>
+</rss>
