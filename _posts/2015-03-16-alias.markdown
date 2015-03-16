@@ -108,3 +108,4 @@ the difference most likely comes from my computer)
 Overall, my conclusion is that you should use whichever one is more readable to you.
 I ran the benchmark `500000` times and that only slowed our code down by `.7` seconds.
 That averages out to `0.0014` milliseconds per method call (barely anything).
+Also Ruby isn't always about this kind of speed, optimize for programmer happiness.
