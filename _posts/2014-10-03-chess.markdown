@@ -13,7 +13,7 @@ Because of how simplistic gosu is, it's very easy to pick up and learn in just a
 
 A large section of my code has been directed toward merely algorithms to check if every piece is moving legally along the board. Looking at one piece by itself, this seems fairly simple to begin with. A rook on "A1" could move to any square on the board where one of the ranks/files matched. So all I needed to do to see if the rook could move was match its location by a regex of the target location. Example:
 
-{% highlight ruby %}
+```ruby
 def rook_can_move?(rook_location, desired_location)
   rook_location =~ Regexp.new("[#{desired_location}]")
 end
@@ -21,7 +21,7 @@ end
 rook_can_move?("A1", "A8")  # => 0
 rook_can_move?("A1", "H1")  # => 1
 rook_can_move?("A1", "B2")  # => nil
-{% endhighlight %}
+```
 
 0 and 1 in this case will be "truthy" while nil is "falsey", which allows this simple regex to check if the rook is allowed to move to a certain spot. Now this type of "algorithm" needs to be written for every other piece in the game, but you also have to account for your king being in check, and not being able to jump pieces later. With either the rook or the knight here being the easiest to program a simple algorithm for, the rest ended up looking quite messy and I had to shove all those checker algorithms into their own files.
 

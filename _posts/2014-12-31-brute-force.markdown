@@ -36,7 +36,7 @@ Here is an example problem:
 And here is an example of a
 solution to the above problem
 
-{% highlight ruby %}
+```ruby
 HOUSES = [:straw, :wood, :brick, :glass]
 PEOPLE = [:richard, :roger, :hannah, :jess]
 POSSIBILITIES = HOUSES.permutation.to_a.product(PEOPLE.permutation.to_a)
@@ -62,13 +62,13 @@ def correct_houses?(possibility)
 end
 
 p POSSIBILITIES.find { |possibility| correct_houses? possibility }
-{% endhighlight %}
+```
 
 Output:
 
-{% highlight ruby %}
+```ruby
 [[:glass, :richard], [:straw, :roger], [:brick, :hannah], [:wood, :jess]]
-{% endhighlight %}
+```
 
 I'm not going to go over this, but I suggest you take
 a short look at it to see the kinds of methods used here.
@@ -158,15 +158,15 @@ then just give the `repeated_permutation` method the
 length that we want.
 Since there are 5 questions, we want a length of 5.
 
-{% highlight ruby %}
+```ruby
 POSSIBILITIES = [:a,:b,:c,:d].repeated_permutation(5).to_a
-{% endhighlight %}
+```
 
 output:
 
-{% highlight ruby %}
+```ruby
 [[:a, :a, :a, :a, :a], [:a, :a, :a, :a, :b], [:a, :a, :a, :a, :c]...]
-{% endhighlight %}
+```
 
 Next, let's start writing checks for each of the questions.
 The first question has to do with the first index of the answer b
@@ -175,9 +175,9 @@ assuming possibility is the array of answers.
 Now we just have to match that up the the answers the question gives us.
 To get this done, I would use hash of answers like this:
 
-{% highlight ruby %}
+```ruby
 answers = {a: 1, b: 4, c: 3, d: 2}
-{% endhighlight %}
+```
 
 This is pretty much stright copying from
 
@@ -190,12 +190,12 @@ This is pretty much stright copying from
 The last part is to match the index and the answers up.
 Here's what I ended up with:
 
-{% highlight ruby %}
+```ruby
 def q_1(possibility)
   answers = {a: 1, b: 4, c: 3, d: 2}
   answers[possibility[0]] - 1 == possibility.index(:b)
 end
-{% endhighlight %}
+```
 
 The `- 1` here is because the index method returns
 us the array index which starts at 0.
@@ -207,7 +207,7 @@ us the array index which starts at 0.
 Here are the answer checkers I have come up with
 to check against all five questions:
 
-{% highlight ruby %}
+```ruby
 def q_1(possibility)
   answers = {a: 1, b: 4, c: 3, d: 2}
   answers[possibility[0]] - 1 == possibility.index(:b)
@@ -232,7 +232,7 @@ def q_5(possibility)
   answers = {a: 0, b: 2, c: 3, d: 1}
   answers[possibility[4]] == possibility.count(:b)
 end
-{% endhighlight %}
+```
 
 Now that we have all 5 checkers we only need to find
 one possibility that will pass every check.
@@ -241,11 +241,11 @@ and if you've made it this far, you can probably
 figure it out on your own.
 Either way, here's what I came up with:
 
-{% highlight ruby %}
+```ruby
 correct = POSSIBILITIES.find do |poss|
   (1..5).all? { |num| __send__ "q_#{num}", poss }
 end
-{% endhighlight %}
+```
 
 This code will run through all the possibilities,
 "send" the methods `q_1`, `q_2`, etc,
@@ -253,9 +253,9 @@ and check if they were all true.
 
 Finally, we can print out our answer:
 
-{% highlight ruby %}
+```ruby
 p correct
-{% endhighlight %}
+```
 
 The answer we get now is `[:c, :d, :b, :c, :b]`
 
@@ -263,7 +263,7 @@ Congratulations! You've made it this far down this post.
 I don't have much else to say other than good luck,
 and here's the full code for the example for reference.
 
-{% highlight ruby %}
+```ruby
 POSSIBILITIES = [:a,:b,:c,:d].repeated_permutation(5).to_a
 
 def q_1(possibility)
@@ -296,4 +296,4 @@ correct = POSSIBILITIES.find do |poss|
 end
 
 p correct
-{% endhighlight %}
+```

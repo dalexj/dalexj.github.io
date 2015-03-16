@@ -14,13 +14,13 @@ Enumerators are objects that many enumerable methods return if they have not bee
 The first step is to grab an enumerator to play with.
 I'm going to start with the most simple one for now:
 
-{% highlight ruby %}
+```ruby
 enumerator = [1,2,3].each
 puts enumerator.inspect
 
 # >> #<Enumerator: [1, 2, 3]:each>
 
-{% endhighlight %}
+```
 
 Now that we have an enumerator, let's check out what methods it has.
 Looking at the
@@ -28,7 +28,7 @@ Looking at the
 we have:
 
 
-{% highlight ruby %}
+```ruby
 # each
 # each_with_index
 # each_with_object
@@ -42,7 +42,7 @@ we have:
 # size
 # with_index
 # with_object
-{% endhighlight %}
+```
 
 While many of these are very useful, I'm only going to go over a few.
 My personal favorite of these methods is the:
@@ -62,7 +62,7 @@ and want your code to still look like decent, thought-out ruby code.
 the typical arguments of the enumerator you're using.
 For example:
 
-{% highlight ruby %}
+```ruby
 enumerator = ["a","b","c"].each
 
 enumerator.with_index do |element, index|
@@ -72,7 +72,7 @@ end
 # >> a is at 0
 # >> b is at 1
 # >> c is at 2
-{% endhighlight %}
+```
 
 Ok, you understood that much but where is this actually useful?
 Any algorithms that is dependent on the position of the element,
@@ -85,7 +85,7 @@ One part of a check sum's calculation is doubling every other digit.
 As Rubyists, we immediately go to enumerables to solve all of our problems.
 A likely first answer is:
 
-{% highlight ruby %}
+```ruby
 some_array = []
 [4, 5, 9].each_with_index do |digit, index|
   if index.even?
@@ -98,14 +98,14 @@ end
 puts some_array.inspect
 
 # >> [8, 5, 18]
-{% endhighlight %}
+```
 
 Sure we got our answer, but who likes to shovel things into another
 array when you're already using an enumerable method?
 Here's how you can do this with the .with_index enumerator method:
 
 
-{% highlight ruby %}
+```ruby
 some_array = [4, 5, 9].map.with_index do |digit, index|
   index.even? ? digit * 2 : digit
 end
@@ -113,14 +113,14 @@ end
 puts some_array.inspect
 
 # >> [8, 5, 18]
-{% endhighlight %}
+```
 
 Doesn't that just look a little bit nicer?
 It's a bit more concise how Ruby should look,
 and we're not shoveling things into an array inside of our enumerable method.
 Even without the ternary, the .with_index makes this looks quite a bit better:
 
-{% highlight ruby %}
+```ruby
 some_array = [4, 5, 9].map.with_index do |digit, index|
   if index.even?
     digit * 2
@@ -128,7 +128,7 @@ some_array = [4, 5, 9].map.with_index do |digit, index|
     digit
   end
 end
-{% endhighlight %}
+```
 
 I think that's enough time for that method,
 let's look at a few more.
@@ -146,7 +146,7 @@ but this is one way to see what's going on between all that.
 (call the block) and it also iterates once.
 If there's nothing else to iterate over, it raises a StopIteration.
 
-{% highlight ruby %}
+```ruby
 enum = [1,2,3].each
 
 puts enum.next
@@ -160,12 +160,12 @@ puts enum.next
 
 # ~> StopIteration
 # ~> iteration reached an end
-{% endhighlight %}
+```
 
 Then we have .peek which does the same as .next but it doesn't iterate at all.
 It still raises a StopIteration when reaching the end though.
 
-{% highlight ruby %}
+```ruby
 enum = [1,2,3].each
 
 puts enum.peek
@@ -184,18 +184,18 @@ puts enum.peek
 
 # ~> StopIteration
 # ~> iteration reached an end
-{% endhighlight %}
+```
 
 Then .take(n) will do the same as .next n times:
 
-{% highlight ruby %}
+```ruby
 enum = [1,2,3].each
 
 puts enum.take(2)
 
 # >> 1
 # >> 2
-{% endhighlight %}
+```
 
 And if you do need to go back, you have:
 
@@ -203,7 +203,7 @@ And if you do need to go back, you have:
 
 There's not much explination needed for this one, so here's an example:
 
-{% highlight ruby %}
+```ruby
 enum = [1,2,3].each
 
 puts enum.next
@@ -216,7 +216,7 @@ puts enum.next
 # >> 2
 # >> 1
 # >> 2
-{% endhighlight %}
+```
 
 All rewind does is reset the iteration back to the beginning.
 Pretty straightforward.
@@ -229,7 +229,7 @@ Now how can we make some enumerators to work with?
 Many enumerable methods will return us one when called without a block.
 Here's a short list of common enumerable methods that return enumerators:
 
-{% highlight ruby %}
+```ruby
 [].collect
 [].each
 [].each_slice(num)
@@ -244,12 +244,12 @@ Here's a short list of common enumerable methods that return enumerators:
 [].reject
 [].select
 [].sort_by
-{% endhighlight %}
+```
 
 We can also use Enumerator.new and give it a block to iterate over.
 Here's a relatively simple example:
 
-{% highlight ruby %}
+```ruby
 enum = Enumerator.new do |yielder|
   (4..10).each do |num|
     yielder << num
@@ -263,14 +263,14 @@ puts enum.take(5)
 # >> 6
 # >> 7
 # >> 8
-{% endhighlight %}
+```
 
 This yielder parameter is where we add our items to iterate over for our enumerator.
 A nice thing about this is that we infinitely add items to it,
 then iterate only a set number of times.
 For example, if we wanted all the even numbers:
 
-{% highlight ruby %}
+```ruby
 all_evens = Enumerator.new do |yielder|
   i = 1
   loop do
@@ -286,7 +286,7 @@ puts all_evens.take(5)
 # >> 6
 # >> 8
 # >> 10
-{% endhighlight %}
+```
 
 We are looping infinitely here,
 but we can still take the first n even numbers since the enumerator only generates
@@ -299,7 +299,7 @@ especially those that are dependent on previous values.
 The famous example of the fibonacci sequence can be generated quite easily without recursion.
 Here's one way to construct this:
 
-{% highlight ruby %}
+```ruby
 fib = Enumerator.new do |yielder|
   2.times { yielder << 1 }
   one_before = 1
@@ -324,7 +324,7 @@ puts fib.take(10)
 # >> 21
 # >> 34
 # >> 55
-{% endhighlight %}
+```
 
 I tried to keep the more complex algorithmic pieces out of the way,
 so we can focus more on the enumerator piece.
@@ -333,21 +333,21 @@ without having to regenerate everything in a recursive way for every value.
 
 What I mean by a recursive way is something like this:
 
-{% highlight ruby %}
+```ruby
 def fib(n)
   return 1 if n <= 2
   fib(n - 1) + fib(n - 2)
 end
-{% endhighlight %}
+```
 
 That's shorter code you say?
 Valid point, but the enumerator never has to call itself again, and is thus much faster.
 I benchmarked the enumerator version and the recursive version to find only the 50th fibonacci number.
 Here are my results:
 
-{% highlight ruby %}
+```ruby
 # recursion:  1275.593612 seconds
 # enumerator: 0.000019    seconds
-{% endhighlight %}
+```
 
 In other words, enumerators are super cool and everyone should them.

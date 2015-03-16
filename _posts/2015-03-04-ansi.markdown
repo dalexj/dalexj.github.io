@@ -20,9 +20,9 @@ To call an ansi "function", you need a certain escape
 sequence so that your terminal will pick it up.
 In ruby, we can do this with the string:
 
-{% highlight ruby %}
+```ruby
 "\e["
-{% endhighlight %}
+```
 
 This lets your shell know that you want to call a function.
 To actually use a function, you then need to give it some
@@ -34,9 +34,9 @@ numbers in the 40s range will change the background color.
 
 In use, this would look like
 
-{% highlight ruby %}
+```ruby
 "\e[34;41m"
-{% endhighlight %}
+```
 
 What this will do is set your terminal background color and
 text color for every character that follows it until the colors are changed.
@@ -46,9 +46,9 @@ side of your string to first set the color, then change back to defaults.
 If you want to try this out,
 change the ones digit number for 34 and 41 to see a color change.
 
-{% highlight ruby %}
+```ruby
 puts "\e[34;41m Lorem ipsum dolor sit amet, consectetur adipisicing elit."
-{% endhighlight %}
+```
 
 ### The Syntax
 
@@ -56,9 +56,9 @@ As you may notice from this garbage looking string,
 ansi sequences must follow a certain syntax.
 In general, you will have
 
-{% highlight ruby %}
+```ruby
 "\e[#{args}#{function}"
-{% endhighlight %}
+```
 
 `args` in this case is going to be numbers separated by semicolons,
 where the numbers mean something different depending on the function.
@@ -72,12 +72,12 @@ I'll use some of this to make an example of a loading bar.
 The first thing we want is some sort of bar that looks like its loading.
 For this example, I'm just going to use dots like this:
 
-{% highlight ruby %}
+```ruby
 100.times do |i|
   puts ". " * (i % 20)
   sleep(0.1)
 end
-{% endhighlight %}
+```
 
 All this does is print out some more dots every loop until it hits 20,
 which it then resets back to 0 dots. Now we need some cool ANSI
@@ -86,13 +86,13 @@ we can easily pull off, is to move the cursor up 1 after the `puts`.
 The ANSI `A` function moves our cursor up, and we only need give
 it arguments for how far up, in this case `1`.
 
-{% highlight ruby %}
+```ruby
 100.times do |i|
   puts ". " * (i % 20)
   sleep(0.1)
   print "\e[1A"
 end
-{% endhighlight %}
+```
 
 The reason I use `print` here for moving up is because `puts`
 will add a newline at the end if the string doesn't have one,
@@ -107,24 +107,24 @@ current line with an argument for before cursor,
 after cursor or both. I'll give it the `2` argument
 to clear both sides.
 
-{% highlight ruby %}
+```ruby
 100.times do |i|
   puts ". " * (i % 20)
   sleep(0.1)
   print "\e[1A\e[2K"
 end
-{% endhighlight %}
+```
 
 Now of course we need some cool colors to make this complete.
 
-{% highlight ruby %}
+```ruby
 100.times do |i|
   print "\e[37;43m"
   puts (". " * (i % 20)) + "\e[39;49m"
   sleep(0.1)
   print "\e[1A\e[2K"
 end
-{% endhighlight %}
+```
 
 **Note**: The `"\e[39;49m"` here will set the terminal back to default
 colors so that the newline from `puts` isn't colored

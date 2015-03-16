@@ -10,3 +10,9 @@ github_username:  dalexj
 
 # Build settings
 markdown: kramdown
+kramdown:
+  input: GFM
+  use_coderay: true
+  coderay:
+    coderay_line_numbers: table
+    coderay_css: class

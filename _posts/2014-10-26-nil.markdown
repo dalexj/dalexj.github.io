@@ -7,22 +7,18 @@ layout: post
 
 # a = a is nil?????
 
-{% highlight ruby %}
-
+```ruby
 a = b
 
 # ~> NameError: undefined local variable or method `b' for main:Object
-
-{% endhighlight %}
+```
 
 Alright, this much makes sense, we have never set b, but take a look at this next one
 
-{% highlight ruby %}
-
+```ruby
 a = a      # => nil
 a.inspect  # => "nil"
-
-{% endhighlight %}
+```
 
 Wait a minute... What's going on here?
 
@@ -30,13 +26,11 @@ Above, we tried to call a variable that didn't exist and ended up with a NameErr
 
 One more silly thing about this, just to see exactly what's going on here.
 
-{% highlight ruby %}
-
+```ruby
 defined?(a)  # => nil
 a = a        # => nil
 defined?(a)  # => "local-variable"
-
-{% endhighlight %}
+```
 
 This is just proving that we have not set the variable "a" beforehand, yet somehow it's being set to nil when we set it to itself
 
@@ -48,8 +42,7 @@ Whenever we set a local variable inside ruby, it creates a placeholder for varia
 
 It's a little hard to explain exactly, so here's some code that shows what I'm talking about.
 
-{% highlight ruby %}
-
+```ruby
 begin
   a = b
   puts "a = b didn't throw an error"
@@ -58,16 +51,14 @@ rescue NameError
 end
 
 # >> NameError, as expected
-
-{% endhighlight %}
+```
 
 Ok this is what we showed earlier, right? But if you see here, the code still tried to set a to b, and continued on because we handled the error
 
 Now remember what I said about ruby creating a placeholder for our variable? Let's use the above code to see that in action
 
 
-{% highlight ruby %}
-
+```ruby
 begin
   puts a.inspect
 rescue NameError
@@ -89,36 +80,32 @@ end
 # >> a is not set yet
 # >> a being set to placeholder, but errors at b because b is not set
 # >> nil
-
-{% endhighlight %}
+```
 
 Well that's a bunch of begins and resuces to read through, but the general idea is pretty straightforward.
 
 When ruby sees:
 
-{% highlight ruby %}
+```ruby
 a =
-
-{% endhighlight %}
+```
 
 It sets a right then and there to nil, our "placeholder".
 
 When ruby sees:
 
-{% highlight ruby %}
+```ruby
 a = b
-
-{% endhighlight %}
+```
 
 It first sets a to the "placeholder" nil, then errors out because b doesn't exist.
 In our case, we handled the error, so we could keep going with our program, with a being set to nil
 
 This brings us right back to where we started
 
-{% highlight ruby %}
+```ruby
 a = a # => nil
-
-{% endhighlight %}
+```
 
 Now we can explain why this is happening.
 At first, ruby sees that we want to create this variable "a" and sets it to nil momentarily.
