@@ -1,0 +1,110 @@
+---
+title: Alias
+date: 2015-03-16
+categories: ruby
+layout: post
+---
+
+### What is alias?
+
+Alias is just a way to call a method by a different name.
+This is something I like to use a lot in my terminal
+to shorten commands I type extremely often.
+The Ruby language also has a bunch of built in aliases.
+Methods such as `map`/`collect` or `reduce`/`inject` do
+the exact same thing, but some people prefer one name over the other.
+
+### Ruby is slow
+
+Everything in Ruby is slow, it's something we put up with
+for the code quality. Either way, it's still interesting to see
+the differences in that speed and if there is anything faster.
+
+In some cases, we want to have a method by a different name.
+For example, we've got a `User` with an `admin` attribute.
+I want to be able to ask the user if `admin?` but our
+method name is `admin`. This isn't terribly hard, just need a very
+quick little method.
+
+```ruby
+class User
+  def admin?
+    admin
+  end
+end
+```
+
+Now I, knowing that Ruby is slow, get a little interested in if this is very performant.
+I wrote the following benchmark:
+
+```ruby
+require "benchmark"
+
+def a
+  "a"
+end
+
+def b
+  a
+end
+
+n = 500_000
+
+puts Benchmark.measure { n.times { a } }
+puts Benchmark.measure { n.times { b } }
+```
+
+This ended up coming back with the results:
+
+```plain
+0.790000   0.010000   0.800000 (  0.790869)
+1.480000   0.000000   1.480000 (  1.488577)
+```
+
+Wow! Just calling a single method for us Ruby takes its sweet time.
+Considering we only want to be able to access this method by another name,
+there's probably a way to skip other slow things Ruby will
+setup in creating another method.
+
+Thankfully for us, Ruby has an `alias` keyword that will do just this.
+To prove it, I wrote another benchmark to test both the alias version
+and the version we just wrote.
+
+```ruby
+require "benchmark"
+
+def a
+  "a"
+end
+
+def b
+  a
+end
+
+alias c a
+
+n = 500_000
+
+puts Benchmark.measure { n.times { a } }
+puts Benchmark.measure { n.times { b } }
+puts Benchmark.measure { n.times { c } }
+```
+
+Results for this one:
+
+```plain
+0.800000   0.010000   0.810000 (  0.811017)
+1.500000   0.000000   1.500000 (  1.508526)
+0.800000   0.000000   0.800000 (  0.801237)
+```
+
+This `alias` keyword seems to do exactly what we
+want here at the same speed as the original method.
+(Yes it did finish faster here but it's so close that
+the difference most likely comes from my computer)
+
+### Parting notes
+
+Overall, my conclusion is that you should use whichever one is more readable to you.
+I ran the benchmark `500000` times and that only slowed our code down by `.7` seconds.
+That averages out to `0.0014` milliseconds per method call (barely anything).
