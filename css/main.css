@@ -402,7 +402,7 @@ pre {
   background-color: #333;
   font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
   font-size: 10px;
-  color: #F8F8F8;
+  color: #D5D5D5;
   padding: 1em 0px 1em 1em;
   margin-bottom: 15px; }
 
@@ -498,7 +498,8 @@ ol.CodeRay li {
   font-weight: bold; }
 
 .CodeRay .constant {
-  color: #9B5C2E; }
+  color: #9B703F;
+  font-weight: bold; }
 
 .CodeRay .color {
   color: #0A0; }
@@ -549,7 +550,7 @@ ol.CodeRay li {
   color: #099; }
 
 .CodeRay .function {
-  color: #dacf85; }
+  color: #999; }
 
 .CodeRay .global-variable {
   color: #9a859c;
@@ -560,17 +561,17 @@ ol.CodeRay li {
   font-weight: bold; }
 
 .CodeRay .integer {
-  color: #ddf2a3; }
+  color: #cd92e3; }
 
 .CodeRay .include {
   color: #B44;
   font-weight: bold; }
 
 .CodeRay .inline {
-  color: #DAEFA3; }
+  color: #fff; }
 
 .CodeRay .inline .inline-delimiter {
-  color: #DAEFA3; }
+  color: #888; }
 
 .CodeRay .inline-delimiter {
   color: #D14; }
@@ -644,16 +645,16 @@ ol.CodeRay li {
   font-weight: bold; }
 
 .CodeRay .string {
-  color: #8F9D6A; }
+  color: #DD8; }
 
 .CodeRay .string .content {
-  color: #8F9D6A; }
+  color: #DD8; }
 
 .CodeRay .string .char {
-  color: #8F9D6A; }
+  color: #DD8; }
 
 .CodeRay .string .delimiter {
-  color: #8F9D6A; }
+  color: #DD8; }
 
 .CodeRay .shell {
   color: #D14; }
@@ -662,7 +663,7 @@ ol.CodeRay li {
   color: #D14; }
 
 .CodeRay .symbol {
-  color: #CF6A4C; }
+  color: #99CC99; }
 
 .CodeRay .symbol .content {
   color: #A60; }
