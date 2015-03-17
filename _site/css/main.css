@@ -141,6 +141,9 @@ pre {
   .icon > svg path {
     fill: #828282; }
 
+.page-content .wrapper {
+  background: #f3f3f3; }
+
 /**
  * Site header
  */
