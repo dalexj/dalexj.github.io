@@ -6,9 +6,156 @@
 </description>
     <link>http://dalexj.github.io//</link>
     <atom:link href="http://dalexj.github.io//feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 17 Mar 2015 10:29:46 -0600</pubDate>
-    <lastBuildDate>Tue, 17 Mar 2015 10:29:46 -0600</lastBuildDate>
+    <pubDate>Wed, 29 Apr 2015 12:18:18 -0600</pubDate>
+    <lastBuildDate>Wed, 29 Apr 2015 12:18:18 -0600</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Hash Default Values</title>
+        <description>&lt;p&gt;Going through challenges on &lt;a href=&quot;http://exercism.io/&quot;&gt;Exercism&lt;/a&gt;,
+I’ve seen many cases where hashes can be initialized with a default value
+to remove the logic needed for “if it is set, do this, else do that”,
+but creating that default value can be a little confusing sometimes.&lt;/p&gt;
+
+&lt;h3 id=&quot;when-to-use-hashnewdefault&quot;&gt;When to use Hash.new(default)&lt;/h3&gt;
+
+&lt;p&gt;Running &lt;code&gt;Hash.new(default_value)&lt;/code&gt; will make a hash that instead of
+returning &lt;code&gt;nil&lt;/code&gt; when you lookup a key that doesn’t exist,
+it will return &lt;code&gt;default_value&lt;/code&gt;.
+This can be useful for something like counting occurrences in an array.&lt;/p&gt;
+
+&lt;p&gt;If I have some array of letters &lt;code&gt;[:a, :a, :a, :b, :b]&lt;/code&gt; and want a count of every
+element in the array like &lt;code&gt;{ a: 3, b: 2 }&lt;/code&gt;,
+I can calculate this with something like:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;[&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;].each_with_object({}) &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |letter, counts|
+  counts[letter] ||= &lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;
+  counts[letter] += &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In this case, we can remove the entire &lt;code&gt;counts[letter] ||= 0&lt;/code&gt; line by using &lt;code&gt;Hash.new(0)&lt;/code&gt;&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;[&lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:a&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;, &lt;span class=&quot;symbol&quot;&gt;:b&lt;/span&gt;].each_with_object(&lt;span class=&quot;constant&quot;&gt;Hash&lt;/span&gt;.new(&lt;span class=&quot;integer&quot;&gt;0&lt;/span&gt;)) &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt; |letter, counts|
+  counts[letter] += &lt;span class=&quot;integer&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;when-not-to-use-hashnewdefault&quot;&gt;When not to use Hash.new(default)&lt;/h3&gt;
+
+&lt;p&gt;As helpful as the &lt;code&gt;default_value&lt;/code&gt; is, it doesn’t always work as you predict it would.
+Our hash will always the exact same that you give it inside the default.
+For things like the counts example above,
+this doesn’t matter because we’re reseting the value for a key whenever we add something.
+However, if we’re trying to change the default object rather than reset the hash value,
+we start getting strange behavior.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;default_array = []
+hash = &lt;span class=&quot;constant&quot;&gt;Hash&lt;/span&gt;.new(default_array)
+hash[&lt;span class=&quot;symbol&quot;&gt;:some_key&lt;/span&gt;] &amp;lt;&amp;lt; &lt;span class=&quot;integer&quot;&gt;7&lt;/span&gt;
+hash[&lt;span class=&quot;symbol&quot;&gt;:some_other_key&lt;/span&gt;] &amp;lt;&amp;lt; &lt;span class=&quot;integer&quot;&gt;8&lt;/span&gt;
+
+hash           &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; {}&lt;/span&gt;
+default_array  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; [7, 8]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Because &lt;code&gt;hash[:some_key]&lt;/code&gt; is just giving us &lt;code&gt;default_array&lt;/code&gt; but never setting that key
+in the hash, we’re changing that default object but it’s still doing nothing to the hash.&lt;/p&gt;
+
+&lt;p&gt;I’m just going to leave the following code, and you can look over it if you like,
+but I don’t suggest this.
+The difference here is we’re adding an array to an empty array
+and just creating more arrays every time we do anything.&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;default_array = []
+hash = &lt;span class=&quot;constant&quot;&gt;Hash&lt;/span&gt;.new(default_array)
+hash[&lt;span class=&quot;symbol&quot;&gt;:some_key&lt;/span&gt;] += [&lt;span class=&quot;integer&quot;&gt;7&lt;/span&gt;]
+hash[&lt;span class=&quot;symbol&quot;&gt;:some_other_key&lt;/span&gt;] += [&lt;span class=&quot;integer&quot;&gt;8&lt;/span&gt;]
+
+hash           &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; {:some_key=&amp;gt;[7], :some_other_key=&amp;gt;[8]}&lt;/span&gt;
+default_array  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; []&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The “REAL” way (the one I suggest) you try to get at this problem is use &lt;code&gt;Hash.new(&amp;amp;block)&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This works like the following:&lt;/p&gt;
+
+&lt;div&gt;&lt;table class=&quot;CodeRay&quot;&gt;&lt;tr&gt;
+  &lt;td class=&quot;line-numbers&quot;&gt;&lt;pre&gt;&lt;a href=&quot;#n1&quot; name=&quot;n1&quot;&gt;1&lt;/a&gt;
+&lt;a href=&quot;#n2&quot; name=&quot;n2&quot;&gt;2&lt;/a&gt;
+&lt;a href=&quot;#n3&quot; name=&quot;n3&quot;&gt;3&lt;/a&gt;
+&lt;a href=&quot;#n4&quot; name=&quot;n4&quot;&gt;4&lt;/a&gt;
+&lt;a href=&quot;#n5&quot; name=&quot;n5&quot;&gt;5&lt;/a&gt;
+&lt;a href=&quot;#n6&quot; name=&quot;n6&quot;&gt;6&lt;/a&gt;
+&lt;a href=&quot;#n7&quot; name=&quot;n7&quot;&gt;7&lt;/a&gt;
+&lt;a href=&quot;#n8&quot; name=&quot;n8&quot;&gt;8&lt;/a&gt;
+&lt;/pre&gt;&lt;/td&gt;
+  &lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;constant&quot;&gt;Hash&lt;/span&gt;.new { |the_hash, key_that_was_called_but_not_set| &lt;span class=&quot;string&quot;&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;content&quot;&gt;do something&lt;/span&gt;&lt;span class=&quot;delimiter&quot;&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt; }
+
+hash = &lt;span class=&quot;constant&quot;&gt;Hash&lt;/span&gt;.new { |h, key| h[key] = [] }
+
+hash[&lt;span class=&quot;symbol&quot;&gt;:some_key&lt;/span&gt;] &amp;lt;&amp;lt; &lt;span class=&quot;integer&quot;&gt;7&lt;/span&gt;
+hash[&lt;span class=&quot;symbol&quot;&gt;:some_other_key&lt;/span&gt;] &amp;lt;&amp;lt; &lt;span class=&quot;integer&quot;&gt;8&lt;/span&gt;
+
+hash  &lt;span class=&quot;comment&quot;&gt;# =&amp;gt; {:some_key=&amp;gt;[7], :some_other_key=&amp;gt;[8]}&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;p&gt;When using the block format, the hash will run the block whenever a key that is not set
+has been called. In this case, we want the new key to be set to an empty array right away.
+This way we have our keys set and to a different empty array every time we call a new one.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;If you’re going to use default hash values, pretty much use &lt;code&gt;Hash.new(value)&lt;/code&gt;
+for anything you’re using &lt;code&gt;+=&lt;/code&gt; for (numbers, strings, etc), then &lt;code&gt;Hash.new { something }&lt;/code&gt; for everything else.&lt;/p&gt;
+</description>
+        <pubDate>Wed, 29 Apr 2015 00:00:00 -0600</pubDate>
+        <link>http://dalexj.github.io//ruby/2015/04/29/hash-default-values.html</link>
+        <guid isPermaLink="true">http://dalexj.github.io//ruby/2015/04/29/hash-default-values.html</guid>
+        
+        
+        <category>ruby</category>
+        
+      </item>
     
       <item>
         <title>Alias</title>
